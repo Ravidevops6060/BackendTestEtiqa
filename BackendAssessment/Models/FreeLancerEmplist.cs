@@ -11,7 +11,7 @@ namespace BackendAssessment.Models
 
         public string UserName { get; set; }
         public string Mail { get; set; }
-        public int PhoneNumber { get; set; }
+        public Int32 PhoneNumber { get; set; }
         public string SkillSets { get; set; }
         public string Hobby { get; set; } 
     }

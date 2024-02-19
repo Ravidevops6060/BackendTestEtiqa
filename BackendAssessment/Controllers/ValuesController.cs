@@ -14,7 +14,7 @@ namespace BackendAssessment.Controllers
 {
     public class ValuesController : ApiController
     {
-        SqlConnection sqlconn = new SqlConnection(ConfigurationManager.ConnectionStrings[""].ConnectionString);
+        SqlConnection sqlconn = new SqlConnection(ConfigurationManager.ConnectionStrings["EmpListingDB"].ConnectionString);
         FreeLancerEmplist FLE = new FreeLancerEmplist();
 
         // GET api/values
@@ -26,15 +26,18 @@ namespace BackendAssessment.Controllers
                 da.SelectCommand.CommandType = CommandType.StoredProcedure;
                 DataTable dt = new DataTable();
                 da.Fill(dt);
+
                 List<FreeLancerEmplist> lstfreelanceremplist = new List<FreeLancerEmplist>();
+
                 if (dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count - 1; i++)
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         FreeLancerEmplist FLE = new FreeLancerEmplist();
+                        FLE.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
                         FLE.UserName = dt.Rows[i]["UserName"].ToString();
                         FLE.Mail = dt.Rows[i]["Mail"].ToString();
-                        FLE.PhoneNumber = Convert.ToInt16(dt.Rows[i]["PhoneNumber"]);
+                        FLE.PhoneNumber = Convert.ToInt32(dt.Rows[i]["PhoneNumber"]);
                         FLE.SkillSets = dt.Rows[i]["SkillSets"].ToString();
                         FLE.Hobby = dt.Rows[i]["Hobby"].ToString();
                         lstfreelanceremplist.Add(FLE);
@@ -53,7 +56,7 @@ namespace BackendAssessment.Controllers
             {
                 throw new Exception("error- " + ex.Message);
             }
-            
+
         }
 
         // GET api/values/5
@@ -67,28 +70,28 @@ namespace BackendAssessment.Controllers
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 FreeLancerEmplist FLE = new FreeLancerEmplist();
-                 if (dt.Rows.Count > 0)
+                if (dt.Rows.Count > 0)
                 {
-                   
-                        
-                        FLE.UserName = dt.Rows[0]["UserName"].ToString();
-                        FLE.Mail = dt.Rows[0]["Mail"].ToString();
-                        FLE.PhoneNumber = Convert.ToInt16(dt.Rows[0]["PhoneNumber"]);
-                        FLE.SkillSets = dt.Rows[0]["SkillSets"].ToString();
-                        FLE.Hobby = dt.Rows[0]["Hobby"].ToString();
-                        
-                    
+
+                    FLE.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
+                    FLE.UserName = dt.Rows[0]["UserName"].ToString();
+                    FLE.Mail = dt.Rows[0]["Mail"].ToString();
+                    FLE.PhoneNumber = Convert.ToInt32(dt.Rows[0]["PhoneNumber"]);
+                    FLE.SkillSets = dt.Rows[0]["SkillSets"].ToString();
+                    FLE.Hobby = dt.Rows[0]["Hobby"].ToString();
+
+
                 }
 
-                 if (FLE != null)
-                 {
-                     return FLE;
-                 }
-                 else
-                 {
-                     return null;
-                 }                
-               
+                if (FLE != null)
+                {
+                    return FLE;
+                }
+                else
+                {
+                    return null;
+                }
+
             }
             catch (Exception ex)
             {
@@ -100,7 +103,7 @@ namespace BackendAssessment.Controllers
         public string Post(FreeLancerEmplist freeLancerEmplist)
         {
             string RetStr = "";
-            try 
+            try
             {
                 if (freeLancerEmplist != null)
                 {
@@ -113,11 +116,11 @@ namespace BackendAssessment.Controllers
                     cmd.Parameters.AddWithValue("@SkillSets", freeLancerEmplist.SkillSets);
                     cmd.Parameters.AddWithValue("@Hobby", freeLancerEmplist.Hobby);
                     sqlconn.Open();
-                        int i = cmd.ExecuteNonQuery();
+                    int i = cmd.ExecuteNonQuery();
                     sqlconn.Close();
                     if (i > 0)
                     {
-                        RetStr= "Data Inserted Successfully!";
+                        RetStr = "Data Inserted Successfully!";
                     }
                     else
                     {
@@ -126,7 +129,7 @@ namespace BackendAssessment.Controllers
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error- " + ex.Message);
             }
@@ -134,18 +137,18 @@ namespace BackendAssessment.Controllers
         }
 
         // PUT api/values/5
-        public string Put(int id, FreeLancerEmplist freeLancerEmplist)
+        public string Put(int Id, FreeLancerEmplist freeLancerEmplist)
         {
-           
+
             string RetStr = "";
-            try 
+            try
             {
                 if (freeLancerEmplist != null)
                 {
                     SqlCommand cmd = new SqlCommand("Usp_UpdateEmpListbyID", sqlconn);
 
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@id", freeLancerEmplist.Id);
+                    cmd.Parameters.AddWithValue("@id", Id);
                     cmd.Parameters.AddWithValue("@UserName", freeLancerEmplist.UserName);
                     cmd.Parameters.AddWithValue("@Mail", freeLancerEmplist.Mail);
                     cmd.Parameters.AddWithValue("@PhoneNumber", freeLancerEmplist.PhoneNumber);
@@ -157,7 +160,7 @@ namespace BackendAssessment.Controllers
 
                     if (i > 0)
                     {
-                        RetStr= "Data Updated Successfully!";
+                        RetStr = "Data Updated Successfully!";
                     }
                     else
                     {
@@ -166,7 +169,7 @@ namespace BackendAssessment.Controllers
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error- " + ex.Message);
             }
@@ -180,11 +183,11 @@ namespace BackendAssessment.Controllers
             string RetStr = "";
             try
             {
-                if (id>0)
+                if (id > 0)
                 {
                     SqlCommand cmd = new SqlCommand("Usp_DeleteEmpListbyID", sqlconn);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@id", id);                   
+                    cmd.Parameters.AddWithValue("@id", id);
                     sqlconn.Open();
                     int i = cmd.ExecuteNonQuery();
                     sqlconn.Close();
@@ -207,6 +210,6 @@ namespace BackendAssessment.Controllers
             return RetStr;
         }
 
-        
+
     }
 }
