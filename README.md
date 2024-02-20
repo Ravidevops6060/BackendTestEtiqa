@@ -15,5 +15,4 @@ For each method, we use the model values as a body and call store procedures bas
 
 
 
-
-      
+Note: Code and changes regarding this is available in the master branch of Backendassessment folder that includes API methods in value controller and model with FreeLancerEmplist in the same project.
